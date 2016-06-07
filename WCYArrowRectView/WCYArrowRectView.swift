@@ -52,6 +52,8 @@ class WCYArrowRectView: UIView {
     }
     
     override func drawRect(rect: CGRect) {
+        super.drawRect(rect)
+        
         var path: CGPath
         switch arrowPos {
         case .TopLeft:
