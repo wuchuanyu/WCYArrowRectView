@@ -73,6 +73,18 @@ class ViewController: UIViewController {
         arrowRectView7.strokeColor = UIColor(red: 55/255.0, green: 55/255.0, blue: 55/255.0, alpha: 1.0)
         arrowRectView7.fillColor = UIColor(red: 55/255.0, green: 55/255.0, blue: 55/255.0, alpha: 1.0)
         self.view.addSubview(arrowRectView7)
+        
+        let arrowRectView8 = WCYArrowRectView(frame: CGRectMake(20, 520, 80, 100))
+        arrowRectView8.arrowPos = .LeftMiddle
+        arrowRectView8.arrowWidth = 20
+        arrowRectView8.arrowHeight = 10
+        self.view.addSubview(arrowRectView8)
+        
+        let arrowRectView9 = WCYArrowRectView(frame: CGRectMake(140, 520, 80, 100))
+        arrowRectView9.arrowPos = .RightMiddle
+        arrowRectView9.arrowWidth = 20
+        arrowRectView9.arrowHeight = 10
+        self.view.addSubview(arrowRectView9)
     }
 
     override func didReceiveMemoryWarning() {

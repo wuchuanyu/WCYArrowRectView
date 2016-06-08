@@ -8,14 +8,18 @@
 
 import UIKit
 
-enum WCYArrowPosition : Int {
+public enum WCYArrowPosition : Int {
     case TopLeft
+    case TopMiddle
     case TopRight
     case BottomLeft
+    case BottomMiddle
     case BottomRight
     case LeftTop
+    case LeftMiddle
     case LeftBottom
     case RightTop
+    case RightMiddle
     case RightBottom
 }
 
@@ -58,18 +62,26 @@ class WCYArrowRectView: UIView {
         switch arrowPos {
         case .TopLeft:
             path = topLeftPath()
+        case .TopMiddle:
+            path = topMiddlePath()
         case .TopRight:
             path = topRightPath()
         case .BottomLeft:
             path = bottomLeftPath()
+        case .BottomMiddle:
+            path = bottomMiddlePath()
         case .BottomRight:
             path = bottomRightPath()
         case .LeftTop:
             path = leftTopPath()
+        case .LeftMiddle:
+            path = leftMiddlePath()
         case .LeftBottom:
             path = leftBottomPath()
         case .RightTop:
             path = rightTopPath()
+        case .RightMiddle:
+            path = rightMiddlePath()
         case .RightBottom:
             path = rightBottomPath()
         }
@@ -104,6 +116,33 @@ class WCYArrowRectView: UIView {
         CGPathAddLineToPoint(path, nil, arrowOffset, minY + arrowHeight)
         CGPathAddLineToPoint(path, nil, arrowOffset + arrowWidth/2, minY)
         CGPathAddLineToPoint(path, nil, arrowOffset + arrowWidth, minY + arrowHeight)
+        //arrow end
+        CGPathAddLineToPoint(path, nil, maxX - corner , minY + arrowHeight)
+        CGPathAddArcToPoint(path, nil, maxX , minY + arrowHeight, maxX, minY + corner + arrowHeight, corner)
+        CGPathAddLineToPoint(path, nil, maxX , maxY - corner)
+        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
+        CGPathAddLineToPoint(path, nil, corner, maxY)
+        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
+        CGPathAddLineToPoint(path, nil, minX, corner + arrowHeight)
+        CGPathAddArcToPoint(path, nil, minX, minY + arrowHeight, minX + corner, minY + arrowHeight, corner)
+        CGPathCloseSubpath(path)
+        return path
+    }
+    
+    private func topMiddlePath() -> CGPath {
+        let corner: CGFloat = self.corner
+        let width = CGRectGetWidth(self.frame)
+        let height = CGRectGetHeight(self.frame)
+        let minX = strokeWidth/2
+        let maxX = width - strokeWidth/2
+        let minY = strokeWidth/2
+        let maxY = height - strokeWidth/2
+        let path = CGPathCreateMutable()
+        CGPathMoveToPoint(path, nil, minX + corner, minY + arrowHeight)
+        //arrow
+        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 - arrowWidth/2, minY + arrowHeight)
+        CGPathAddLineToPoint(path, nil, (minX+maxX)/2, minY)
+        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 + arrowWidth/2, minY + arrowHeight)
         //arrow end
         CGPathAddLineToPoint(path, nil, maxX - corner , minY + arrowHeight)
         CGPathAddArcToPoint(path, nil, maxX , minY + arrowHeight, maxX, minY + corner + arrowHeight, corner)
@@ -171,6 +210,33 @@ class WCYArrowRectView: UIView {
         return path
     }
     
+    private func bottomMiddlePath() -> CGPath {
+        let corner: CGFloat = self.corner
+        let width = CGRectGetWidth(self.frame)
+        let height = CGRectGetHeight(self.frame)
+        let minX = strokeWidth/2
+        let maxX = width - strokeWidth/2
+        let minY = strokeWidth/2
+        let maxY = height - strokeWidth/2
+        let path = CGPathCreateMutable()
+        CGPathMoveToPoint(path, nil, minX + corner, minY)
+        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
+        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
+        CGPathAddLineToPoint(path, nil, maxX, maxY - corner - arrowHeight)
+        CGPathAddArcToPoint(path, nil, maxX, maxY - arrowHeight, maxX - corner, maxY - arrowHeight, corner)
+        //arrow
+        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 + arrowWidth/2, maxY - arrowHeight)
+        CGPathAddLineToPoint(path, nil, (minX+maxX)/2, maxY)
+        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 - arrowWidth/2, maxY - arrowHeight)
+        //arrow end
+        CGPathAddLineToPoint(path, nil, corner, maxY - arrowHeight)
+        CGPathAddArcToPoint(path, nil, minX, maxY - arrowHeight, minX, maxY - corner - arrowHeight, corner)
+        CGPathAddLineToPoint(path, nil, minX, corner)
+        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner)
+        CGPathCloseSubpath(path)
+        return path
+    }
+    
     private func bottomRightPath() -> CGPath {
         let corner: CGFloat = self.corner
         let width = CGRectGetWidth(self.frame)
@@ -225,6 +291,33 @@ class WCYArrowRectView: UIView {
         return path
     }
     
+    private func leftMiddlePath() -> CGPath {
+        let corner: CGFloat = self.corner
+        let width = CGRectGetWidth(self.frame)
+        let height = CGRectGetHeight(self.frame)
+        let minX = strokeWidth/2
+        let maxX = width - strokeWidth/2
+        let minY = strokeWidth/2
+        let maxY = height - strokeWidth/2
+        let path = CGPathCreateMutable()
+        CGPathMoveToPoint(path, nil, minX + corner + arrowHeight, minY)
+        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
+        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
+        CGPathAddLineToPoint(path, nil, maxX, maxY - corner)
+        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
+        CGPathAddLineToPoint(path, nil, corner + arrowHeight, maxY)
+        CGPathAddArcToPoint(path, nil, arrowHeight, maxY, arrowHeight, maxY - corner, corner)
+        //arrow
+        CGPathAddLineToPoint(path, nil, arrowHeight, (minY+maxY)/2 + arrowWidth/2)
+        CGPathAddLineToPoint(path, nil, minX, (minY+maxY)/2)
+        CGPathAddLineToPoint(path, nil, arrowHeight, (minY+maxY)/2 - arrowWidth/2)
+        //arrow end
+        CGPathAddLineToPoint(path, nil, arrowHeight, corner)
+        CGPathAddArcToPoint(path, nil, arrowHeight, minY, corner + arrowHeight, minY, corner)
+        CGPathCloseSubpath(path)
+        return path
+    }
+    
     private func leftBottomPath() -> CGPath {
         let corner: CGFloat = self.corner
         let width = CGRectGetWidth(self.frame)
@@ -268,6 +361,33 @@ class WCYArrowRectView: UIView {
         CGPathAddLineToPoint(path, nil, maxX - arrowHeight, arrowOffset)
         CGPathAddLineToPoint(path, nil, maxX, arrowOffset + arrowWidth/2)
         CGPathAddLineToPoint(path, nil, maxX - arrowHeight, arrowOffset + arrowWidth)
+        //arrow end
+        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, maxY - corner)
+        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, maxY, maxX - arrowHeight - corner, maxY, corner)
+        CGPathAddLineToPoint(path, nil, corner, maxY)
+        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
+        CGPathAddLineToPoint(path, nil, minX, corner)
+        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner);
+        CGPathCloseSubpath(path)
+        return path
+    }
+    
+    private func rightMiddlePath() -> CGPath {
+        let corner: CGFloat = self.corner
+        let width = CGRectGetWidth(self.frame)
+        let height = CGRectGetHeight(self.frame)
+        let minX = strokeWidth/2
+        let maxX = width - strokeWidth/2
+        let minY = strokeWidth/2
+        let maxY = height - strokeWidth/2
+        let path = CGPathCreateMutable()
+        CGPathMoveToPoint(path, nil, minX + corner, minY)
+        CGPathAddLineToPoint(path, nil, maxX - corner - arrowHeight, minY)
+        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, minY, maxX - arrowHeight, corner + minY, corner)
+        //arrow
+        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, (minY+maxY)/2 - arrowWidth/2)
+        CGPathAddLineToPoint(path, nil, maxX, (minY+maxY)/2)
+        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, (minY+maxY)/2 + arrowWidth/2)
         //arrow end
         CGPathAddLineToPoint(path, nil, maxX - arrowHeight, maxY - corner)
         CGPathAddArcToPoint(path, nil, maxX - arrowHeight, maxY, maxX - arrowHeight - corner, maxY, corner)
