@@ -8,6 +8,7 @@
 
 import UIKit
 
+@objc
 public enum WCYArrowPosition : Int {
     case TopLeft
     case TopMiddle
