@@ -10,24 +10,24 @@ import UIKit
 
 @objc
 public enum WCYArrowPosition : Int {
-    case TopLeft
-    case TopMiddle
-    case TopRight
-    case BottomLeft
-    case BottomMiddle
-    case BottomRight
-    case LeftTop
-    case LeftMiddle
-    case LeftBottom
-    case RightTop
-    case RightMiddle
-    case RightBottom
+    case topLeft
+    case topMiddle
+    case topRight
+    case bottomLeft
+    case bottomMiddle
+    case bottomRight
+    case leftTop
+    case leftMiddle
+    case leftBottom
+    case rightTop
+    case rightMiddle
+    case rightBottom
 }
 
 @IBDesignable
 class WCYArrowRectView: UIView {
     /// 箭头位置：上下左右
-    @IBInspectable var arrowPos: WCYArrowPosition = .TopLeft
+    @IBInspectable var arrowPos: WCYArrowPosition = .topLeft
     /// 箭头宽
     @IBInspectable var arrowWidth: CGFloat = 10.0
     /// 箭头高
@@ -49,381 +49,382 @@ class WCYArrowRectView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    override func drawRect(rect: CGRect) {
-        super.drawRect(rect)
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
         
         var path: CGPath
         switch arrowPos {
-        case .TopLeft:
+        case .topLeft:
             path = topLeftPath()
-        case .TopMiddle:
+        case .topMiddle:
             path = topMiddlePath()
-        case .TopRight:
+        case .topRight:
             path = topRightPath()
-        case .BottomLeft:
+        case .bottomLeft:
             path = bottomLeftPath()
-        case .BottomMiddle:
+        case .bottomMiddle:
             path = bottomMiddlePath()
-        case .BottomRight:
+        case .bottomRight:
             path = bottomRightPath()
-        case .LeftTop:
+        case .leftTop:
             path = leftTopPath()
-        case .LeftMiddle:
+        case .leftMiddle:
             path = leftMiddlePath()
-        case .LeftBottom:
+        case .leftBottom:
             path = leftBottomPath()
-        case .RightTop:
+        case .rightTop:
             path = rightTopPath()
-        case .RightMiddle:
+        case .rightMiddle:
             path = rightMiddlePath()
-        case .RightBottom:
+        case .rightBottom:
             path = rightBottomPath()
         }
         
         let ctx = UIGraphicsGetCurrentContext()
-        
-        CGContextBeginPath(ctx)
-        CGContextSetFillColorWithColor(ctx, fillColor.CGColor)
-        CGContextAddPath(ctx, path)
-        CGContextFillPath(ctx)
-        
-        CGContextBeginPath(ctx)
-        CGContextSetLineWidth(ctx, strokeWidth)
-        CGContextSetStrokeColorWithColor(ctx, strokeColor.CGColor)
-        let lengths = [dotLineWidth, dotLineSpace]
-        CGContextSetLineDash(ctx, 0, lengths, 2)
-        CGContextAddPath(ctx, path)
-        CGContextStrokePath(ctx)
+        if let ctx = ctx {
+            ctx.beginPath()
+            ctx.setFillColor(fillColor.cgColor)
+            ctx.addPath(path)
+            ctx.fillPath()
+            
+            ctx.beginPath()
+            ctx.setLineWidth(strokeWidth)
+            ctx.setStrokeColor(strokeColor.cgColor)
+            let lengths = [dotLineWidth, dotLineSpace]
+            ctx.setLineDash(phase: 0, lengths: lengths)
+            ctx.addPath(path)
+            ctx.strokePath()
+        }
     }
     
-    private func topLeftPath() -> CGPath {
+    fileprivate func topLeftPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY + arrowHeight)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY + arrowHeight))
         //arrow
-        CGPathAddLineToPoint(path, nil, arrowOffset, minY + arrowHeight)
-        CGPathAddLineToPoint(path, nil, arrowOffset + arrowWidth/2, minY)
-        CGPathAddLineToPoint(path, nil, arrowOffset + arrowWidth, minY + arrowHeight)
+        path.addLine(to: CGPoint(x: arrowOffset, y: minY + arrowHeight))
+        path.addLine(to: CGPoint(x: arrowOffset + arrowWidth/2, y: minY))
+        path.addLine(to: CGPoint(x: arrowOffset + arrowWidth, y: minY + arrowHeight))
         //arrow end
-        CGPathAddLineToPoint(path, nil, maxX - corner , minY + arrowHeight)
-        CGPathAddArcToPoint(path, nil, maxX , minY + arrowHeight, maxX, minY + corner + arrowHeight, corner)
-        CGPathAddLineToPoint(path, nil, maxX , maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner, maxY)
-        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner + arrowHeight)
-        CGPathAddArcToPoint(path, nil, minX, minY + arrowHeight, minX + corner, minY + arrowHeight, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY + arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY + arrowHeight), tangent2End: CGPoint(x: maxX, y: minY + corner + arrowHeight), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY), tangent2End: CGPoint(x: minX, y: maxY - corner), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner + arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY + arrowHeight), tangent2End: CGPoint(x: minX + corner, y: minY + arrowHeight), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func topMiddlePath() -> CGPath {
+    fileprivate func topMiddlePath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY + arrowHeight)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY + arrowHeight))
         //arrow
-        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 - arrowWidth/2, minY + arrowHeight)
-        CGPathAddLineToPoint(path, nil, (minX+maxX)/2, minY)
-        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 + arrowWidth/2, minY + arrowHeight)
+        path.addLine(to: CGPoint(x: (minX+maxX)/2 - arrowWidth/2, y: minY + arrowHeight))
+        path.addLine(to: CGPoint(x: (minX+maxX)/2, y: minY))
+        path.addLine(to: CGPoint(x: (minX+maxX)/2 + arrowWidth/2, y: minY + arrowHeight))
         //arrow end
-        CGPathAddLineToPoint(path, nil, maxX - corner , minY + arrowHeight)
-        CGPathAddArcToPoint(path, nil, maxX , minY + arrowHeight, maxX, minY + corner + arrowHeight, corner)
-        CGPathAddLineToPoint(path, nil, maxX , maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner, maxY)
-        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner + arrowHeight)
-        CGPathAddArcToPoint(path, nil, minX, minY + arrowHeight, minX + corner, minY + arrowHeight, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY + arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY + arrowHeight), tangent2End: CGPoint(x: maxX, y: minY + corner + arrowHeight), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY), tangent2End: CGPoint(x: minX, y: maxY - corner), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner + arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY + arrowHeight), tangent2End: CGPoint(x: minX + corner, y: minY + arrowHeight), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func topRightPath() -> CGPath {
+    fileprivate func topRightPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY + arrowHeight)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY + arrowHeight))
         //arrow
-        CGPathAddLineToPoint(path, nil, maxX-arrowOffset-arrowWidth, minY + arrowHeight)
-        CGPathAddLineToPoint(path, nil, maxX-arrowOffset-arrowWidth + arrowWidth/2, minY)
-        CGPathAddLineToPoint(path, nil, maxX-arrowOffset-arrowWidth + arrowWidth, minY + arrowHeight)
+        path.addLine(to: CGPoint(x: maxX-arrowOffset-arrowWidth, y: minY + arrowHeight))
+        path.addLine(to: CGPoint(x: maxX-arrowOffset-arrowWidth + arrowWidth/2, y: minY))
+        path.addLine(to: CGPoint(x: maxX-arrowOffset-arrowWidth + arrowWidth, y: minY + arrowHeight))
         //arrow end
-        CGPathAddLineToPoint(path, nil, maxX - corner , minY + arrowHeight)
-        CGPathAddArcToPoint(path, nil, maxX , minY + arrowHeight, maxX, minY + corner + arrowHeight, corner)
-        CGPathAddLineToPoint(path, nil, maxX , maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner, maxY)
-        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner + arrowHeight)
-        CGPathAddArcToPoint(path, nil, minX, minY + arrowHeight, minX + corner, minY + arrowHeight, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY + arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY + arrowHeight), tangent2End: CGPoint(x: maxX, y: minY + corner + arrowHeight), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY), tangent2End: CGPoint(x: minX, y: maxY - corner), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner + arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY + arrowHeight), tangent2End: CGPoint(x: minX + corner, y: minY + arrowHeight), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func bottomLeftPath() -> CGPath {
+    fileprivate func bottomLeftPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
-        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
-        CGPathAddLineToPoint(path, nil, maxX, maxY - corner - arrowHeight)
-        CGPathAddArcToPoint(path, nil, maxX, maxY - arrowHeight, maxX - corner, maxY - arrowHeight, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: corner + minY), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner - arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY - arrowHeight), tangent2End: CGPoint(x: maxX - corner, y: maxY - arrowHeight), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, arrowOffset + arrowWidth, maxY - arrowHeight)
-        CGPathAddLineToPoint(path, nil, arrowOffset + arrowWidth/2, maxY)
-        CGPathAddLineToPoint(path, nil, arrowOffset, maxY - arrowHeight)
+        path.addLine(to: CGPoint(x: arrowOffset + arrowWidth, y: maxY - arrowHeight))
+        path.addLine(to: CGPoint(x: arrowOffset + arrowWidth/2, y: maxY))
+        path.addLine(to: CGPoint(x: arrowOffset, y: maxY - arrowHeight))
         //arrow end
-        CGPathAddLineToPoint(path, nil, corner, maxY - arrowHeight)
-        CGPathAddArcToPoint(path, nil, minX, maxY - arrowHeight, minX, maxY - corner - arrowHeight, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner)
-        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: corner, y: maxY - arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY - arrowHeight), tangent2End: CGPoint(x: minX, y: maxY - corner - arrowHeight), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY), tangent2End: CGPoint(x: minX + corner, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func bottomMiddlePath() -> CGPath {
+    fileprivate func bottomMiddlePath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
-        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
-        CGPathAddLineToPoint(path, nil, maxX, maxY - corner - arrowHeight)
-        CGPathAddArcToPoint(path, nil, maxX, maxY - arrowHeight, maxX - corner, maxY - arrowHeight, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: corner + minY), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner - arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY - arrowHeight), tangent2End: CGPoint(x: maxX - corner, y: maxY - arrowHeight), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 + arrowWidth/2, maxY - arrowHeight)
-        CGPathAddLineToPoint(path, nil, (minX+maxX)/2, maxY)
-        CGPathAddLineToPoint(path, nil, (minX+maxX)/2 - arrowWidth/2, maxY - arrowHeight)
+        path.addLine(to: CGPoint(x: (minX+maxX)/2 + arrowWidth/2, y: maxY - arrowHeight))
+        path.addLine(to: CGPoint(x: (minX+maxX)/2, y: maxY))
+        path.addLine(to: CGPoint(x: (minX+maxX)/2 - arrowWidth/2, y: maxY - arrowHeight))
         //arrow end
-        CGPathAddLineToPoint(path, nil, corner, maxY - arrowHeight)
-        CGPathAddArcToPoint(path, nil, minX, maxY - arrowHeight, minX, maxY - corner - arrowHeight, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner)
-        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: corner, y: maxY - arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY - arrowHeight), tangent2End: CGPoint(x: minX, y: maxY - corner - arrowHeight), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY), tangent2End: CGPoint(x: minX + corner, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func bottomRightPath() -> CGPath {
+    fileprivate func bottomRightPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
-        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
-        CGPathAddLineToPoint(path, nil, maxX, maxY - corner - arrowHeight)
-        CGPathAddArcToPoint(path, nil, maxX, maxY - arrowHeight, maxX - corner, maxY - arrowHeight, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: corner + minY), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner - arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY - arrowHeight), tangent2End: CGPoint(x: maxX - corner, y: maxY - arrowHeight), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, maxX - arrowOffset, maxY - arrowHeight)
-        CGPathAddLineToPoint(path, nil, maxX - arrowOffset - arrowWidth/2, maxY)
-        CGPathAddLineToPoint(path, nil, maxX - arrowOffset - arrowWidth, maxY - arrowHeight)
+        path.addLine(to: CGPoint(x: maxX - arrowOffset, y: maxY - arrowHeight))
+        path.addLine(to: CGPoint(x: maxX - arrowOffset - arrowWidth/2, y: maxY))
+        path.addLine(to: CGPoint(x: maxX - arrowOffset - arrowWidth, y: maxY - arrowHeight))
         //arrow end
-        CGPathAddLineToPoint(path, nil, corner, maxY - arrowHeight)
-        CGPathAddArcToPoint(path, nil, minX, maxY - arrowHeight, minX, maxY - corner - arrowHeight, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner)
-        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: corner, y: maxY - arrowHeight))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY - arrowHeight), tangent2End: CGPoint(x: minX, y: maxY - corner - arrowHeight), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY), tangent2End: CGPoint(x: minX + corner, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func leftTopPath() -> CGPath {
+    fileprivate func leftTopPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner + arrowHeight, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
-        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
-        CGPathAddLineToPoint(path, nil, maxX, maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner + arrowHeight, maxY)
-        CGPathAddArcToPoint(path, nil, arrowHeight, maxY, arrowHeight, maxY - corner, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner + arrowHeight, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: corner + minY), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner + arrowHeight, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: arrowHeight, y: maxY), tangent2End: CGPoint(x: arrowHeight, y: maxY - corner), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, arrowHeight, arrowOffset + arrowWidth)
-        CGPathAddLineToPoint(path, nil, minX, arrowOffset + arrowWidth/2)
-        CGPathAddLineToPoint(path, nil, arrowHeight, arrowOffset)
+        path.addLine(to: CGPoint(x: arrowHeight, y: arrowOffset + arrowWidth))
+        path.addLine(to: CGPoint(x: minX, y: arrowOffset + arrowWidth/2))
+        path.addLine(to: CGPoint(x: arrowHeight, y: arrowOffset))
         //arrow end
-        CGPathAddLineToPoint(path, nil, arrowHeight, corner)
-        CGPathAddArcToPoint(path, nil, arrowHeight, minY, corner + arrowHeight, minY, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: arrowHeight, y: corner))
+        path.addArc(tangent1End: CGPoint(x: arrowHeight, y: minY), tangent2End: CGPoint(x: corner + arrowHeight, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func leftMiddlePath() -> CGPath {
+    fileprivate func leftMiddlePath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner + arrowHeight, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
-        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
-        CGPathAddLineToPoint(path, nil, maxX, maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner + arrowHeight, maxY)
-        CGPathAddArcToPoint(path, nil, arrowHeight, maxY, arrowHeight, maxY - corner, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner + arrowHeight, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: corner + minY), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner + arrowHeight, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: arrowHeight, y: maxY), tangent2End: CGPoint(x: arrowHeight, y: maxY - corner), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, arrowHeight, (minY+maxY)/2 + arrowWidth/2)
-        CGPathAddLineToPoint(path, nil, minX, (minY+maxY)/2)
-        CGPathAddLineToPoint(path, nil, arrowHeight, (minY+maxY)/2 - arrowWidth/2)
+        path.addLine(to: CGPoint(x: arrowHeight, y: (minY+maxY)/2 + arrowWidth/2))
+        path.addLine(to: CGPoint(x: minX, y: (minY+maxY)/2))
+        path.addLine(to: CGPoint(x: arrowHeight, y: (minY+maxY)/2 - arrowWidth/2))
         //arrow end
-        CGPathAddLineToPoint(path, nil, arrowHeight, corner)
-        CGPathAddArcToPoint(path, nil, arrowHeight, minY, corner + arrowHeight, minY, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: arrowHeight, y: corner))
+        path.addArc(tangent1End: CGPoint(x: arrowHeight, y: minY), tangent2End: CGPoint(x: corner + arrowHeight, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func leftBottomPath() -> CGPath {
+    fileprivate func leftBottomPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner + arrowHeight, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner, minY)
-        CGPathAddArcToPoint(path, nil, maxX, minY, maxX, corner + minY, corner)
-        CGPathAddLineToPoint(path, nil, maxX, maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX, maxY, maxX - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner + arrowHeight, maxY)
-        CGPathAddArcToPoint(path, nil, arrowHeight, maxY, arrowHeight, maxY - corner, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner + arrowHeight, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: minY), tangent2End: CGPoint(x: maxX, y: corner + minY), radius: corner)
+        path.addLine(to: CGPoint(x: maxX, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX, y: maxY), tangent2End: CGPoint(x: maxX - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner + arrowHeight, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: arrowHeight, y: maxY), tangent2End: CGPoint(x: arrowHeight, y: maxY - corner), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, arrowHeight, maxY - arrowOffset)
-        CGPathAddLineToPoint(path, nil, minX, maxY - arrowOffset - arrowWidth/2)
-        CGPathAddLineToPoint(path, nil, arrowHeight, maxY - arrowOffset - arrowWidth)
+        path.addLine(to: CGPoint(x: arrowHeight, y: maxY - arrowOffset))
+        path.addLine(to: CGPoint(x: minX, y: maxY - arrowOffset - arrowWidth/2))
+        path.addLine(to: CGPoint(x: arrowHeight, y: maxY - arrowOffset - arrowWidth))
         //arrow end
-        CGPathAddLineToPoint(path, nil, arrowHeight, corner)
-        CGPathAddArcToPoint(path, nil, arrowHeight, minY, corner + arrowHeight, minY, corner)
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: arrowHeight, y: corner))
+        path.addArc(tangent1End: CGPoint(x: arrowHeight, y: minY), tangent2End: CGPoint(x: corner + arrowHeight, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func rightTopPath() -> CGPath {
+    fileprivate func rightTopPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner - arrowHeight, minY)
-        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, minY, maxX - arrowHeight, corner + minY, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner - arrowHeight, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX - arrowHeight, y: minY), tangent2End: CGPoint(x: maxX - arrowHeight, y: corner + minY), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, arrowOffset)
-        CGPathAddLineToPoint(path, nil, maxX, arrowOffset + arrowWidth/2)
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, arrowOffset + arrowWidth)
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: arrowOffset))
+        path.addLine(to: CGPoint(x: maxX, y: arrowOffset + arrowWidth/2))
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: arrowOffset + arrowWidth))
         //arrow end
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, maxY, maxX - arrowHeight - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner, maxY)
-        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner)
-        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner);
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX - arrowHeight, y: maxY), tangent2End: CGPoint(x: maxX - arrowHeight - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY), tangent2End: CGPoint(x: minX, y: maxY - corner), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY), tangent2End: CGPoint(x: minX + corner, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func rightMiddlePath() -> CGPath {
+    fileprivate func rightMiddlePath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner - arrowHeight, minY)
-        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, minY, maxX - arrowHeight, corner + minY, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner - arrowHeight, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX - arrowHeight, y: minY), tangent2End: CGPoint(x: maxX - arrowHeight, y: corner + minY), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, (minY+maxY)/2 - arrowWidth/2)
-        CGPathAddLineToPoint(path, nil, maxX, (minY+maxY)/2)
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, (minY+maxY)/2 + arrowWidth/2)
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: (minY+maxY)/2 - arrowWidth/2))
+        path.addLine(to: CGPoint(x: maxX, y: (minY+maxY)/2))
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: (minY+maxY)/2 + arrowWidth/2))
         //arrow end
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, maxY, maxX - arrowHeight - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner, maxY)
-        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner)
-        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner);
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX - arrowHeight, y: maxY), tangent2End: CGPoint(x: maxX - arrowHeight - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY), tangent2End: CGPoint(x: minX, y: maxY - corner), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY), tangent2End: CGPoint(x: minX + corner, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
     
-    private func rightBottomPath() -> CGPath {
+    fileprivate func rightBottomPath() -> CGPath {
         let corner: CGFloat = self.corner
-        let width = CGRectGetWidth(self.frame)
-        let height = CGRectGetHeight(self.frame)
+        let width = self.frame.width
+        let height = self.frame.height
         let minX = strokeWidth/2
         let maxX = width - strokeWidth/2
         let minY = strokeWidth/2
         let maxY = height - strokeWidth/2
-        let path = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, minX + corner, minY)
-        CGPathAddLineToPoint(path, nil, maxX - corner - arrowHeight, minY)
-        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, minY, maxX - arrowHeight, corner + minY, corner)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: minX + corner, y: minY))
+        path.addLine(to: CGPoint(x: maxX - corner - arrowHeight, y: minY))
+        path.addArc(tangent1End: CGPoint(x: maxX - arrowHeight, y: minY), tangent2End: CGPoint(x: maxX - arrowHeight, y: corner + minY), radius: corner)
         //arrow
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, maxY - arrowOffset - arrowWidth)
-        CGPathAddLineToPoint(path, nil, maxX, maxY - arrowOffset - arrowWidth/2)
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, maxY - arrowOffset)
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: maxY - arrowOffset - arrowWidth))
+        path.addLine(to: CGPoint(x: maxX, y: maxY - arrowOffset - arrowWidth/2))
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: maxY - arrowOffset))
         //arrow end
-        CGPathAddLineToPoint(path, nil, maxX - arrowHeight, maxY - corner)
-        CGPathAddArcToPoint(path, nil, maxX - arrowHeight, maxY, maxX - arrowHeight - corner, maxY, corner)
-        CGPathAddLineToPoint(path, nil, corner, maxY)
-        CGPathAddArcToPoint(path, nil, minX, maxY, minX, maxY - corner, corner)
-        CGPathAddLineToPoint(path, nil, minX, corner)
-        CGPathAddArcToPoint(path, nil, minX, minY, minX + corner, minY, corner);
-        CGPathCloseSubpath(path)
+        path.addLine(to: CGPoint(x: maxX - arrowHeight, y: maxY - corner))
+        path.addArc(tangent1End: CGPoint(x: maxX - arrowHeight, y: maxY), tangent2End: CGPoint(x: maxX - arrowHeight - corner, y: maxY), radius: corner)
+        path.addLine(to: CGPoint(x: corner, y: maxY))
+        path.addArc(tangent1End: CGPoint(x: minX, y: maxY), tangent2End: CGPoint(x: minX, y: maxY - corner), radius: corner)
+        path.addLine(to: CGPoint(x: minX, y: corner))
+        path.addArc(tangent1End: CGPoint(x: minX, y: minY), tangent2End: CGPoint(x: minX + corner, y: minY), radius: corner)
+        path.closeSubpath()
         return path
     }
 }
