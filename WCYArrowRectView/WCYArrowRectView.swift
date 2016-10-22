@@ -89,18 +89,20 @@ class WCYArrowRectView: UIView {
         
         let ctx = UIGraphicsGetCurrentContext()
         
-        CGContextBeginPath(ctx)
-        CGContextSetFillColorWithColor(ctx, fillColor.CGColor)
-        CGContextAddPath(ctx, path)
-        CGContextFillPath(ctx)
-        
-        CGContextBeginPath(ctx)
-        CGContextSetLineWidth(ctx, strokeWidth)
-        CGContextSetStrokeColorWithColor(ctx, strokeColor.CGColor)
-        let lengths = [dotLineWidth, dotLineSpace]
-        CGContextSetLineDash(ctx, 0, lengths, 2)
-        CGContextAddPath(ctx, path)
-        CGContextStrokePath(ctx)
+        if let ctx = ctx {            
+            CGContextBeginPath(ctx)
+            CGContextSetFillColorWithColor(ctx, fillColor.CGColor)
+            CGContextAddPath(ctx, path)
+            CGContextFillPath(ctx)
+            
+            CGContextBeginPath(ctx)
+            CGContextSetLineWidth(ctx, strokeWidth)
+            CGContextSetStrokeColorWithColor(ctx, strokeColor.CGColor)
+            let lengths = [dotLineWidth, dotLineSpace]
+            CGContextSetLineDash(ctx, 0, lengths, 2)
+            CGContextAddPath(ctx, path)
+            CGContextStrokePath(ctx)
+        }
     }
     
     private func topLeftPath() -> CGPath {
