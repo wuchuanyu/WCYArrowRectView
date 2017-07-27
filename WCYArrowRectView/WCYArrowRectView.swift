@@ -25,38 +25,38 @@ public enum WCYArrowPosition : Int {
 }
 
 @IBDesignable
-class WCYArrowRectView: UIView {
+public class WCYArrowRectView: UIView {
     /// 箭头位置：上下左右
-    @IBInspectable var arrowPos: WCYArrowPosition = .topLeft
+    @IBInspectable public var arrowPos: WCYArrowPosition = .topLeft
     /// 箭头宽
-    @IBInspectable var arrowWidth: CGFloat = 10.0
+    @IBInspectable public var arrowWidth: CGFloat = 10.0
     /// 箭头高
-    @IBInspectable var arrowHeight: CGFloat = 6.0
+    @IBInspectable public var arrowHeight: CGFloat = 6.0
     /// 箭头偏移量
-    @IBInspectable var arrowOffset: CGFloat = 20.0
+    @IBInspectable public var arrowOffset: CGFloat = 20.0
     /// 边线颜色
-    @IBInspectable var strokeColor: UIColor = UIColor(red: 215/255.0, green: 215/255.0, blue: 215/255.0, alpha: 1.0)
+    @IBInspectable public var strokeColor: UIColor = UIColor(red: 215/255.0, green: 215/255.0, blue: 215/255.0, alpha: 1.0)
     /// 填充颜色
-    @IBInspectable var fillColor: UIColor = UIColor(red: 245/255.0, green: 245/255.0, blue: 245/255.0, alpha: 1.0)
+    @IBInspectable public var fillColor: UIColor = UIColor(red: 245/255.0, green: 245/255.0, blue: 245/255.0, alpha: 1.0)
     /// 圆角
-    @IBInspectable var corner: CGFloat = 8.0
+    @IBInspectable public var corner: CGFloat = 8.0
     /// 虚线线宽
-    @IBInspectable var dotLineWidth: CGFloat = 3.0
+    @IBInspectable public var dotLineWidth: CGFloat = 3.0
     /// 虚线间隔，若边线为实线，只需将这个值设置成0
-    @IBInspectable var dotLineSpace: CGFloat = 2.0
+    @IBInspectable public var dotLineSpace: CGFloat = 2.0
     /// 线宽
-    @IBInspectable var strokeWidth: CGFloat = 1.0
+    @IBInspectable public var strokeWidth: CGFloat = 1.0
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.white
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    override func draw(_ rect: CGRect) {
+    override public func draw(_ rect: CGRect) {
         super.draw(rect)
         
         var path: CGPath
